@@ -32,3 +32,5 @@ declare const Plasma: (new (rootInstance: Instance) => Node) & {
 	checkbox: typeof checkbox;
 	arrow: typeof arrow;
 };
+
+export = Plasma;
