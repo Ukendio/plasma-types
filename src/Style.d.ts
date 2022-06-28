@@ -16,6 +16,6 @@ type PatchOverride<Base, Overrides> = Id<{
 		: never;
 }>;
 
-export function get<T extends { [index: string]: unknown }>(): PatchOverride<DefaultStyle, T>;
+export function get<T extends { [index: string]: unknown } | undefined>(): PatchOverride<DefaultStyle, T>;
 
 export function set<T extends { [index: string]: unknown }>(styleFragment: T): void;
