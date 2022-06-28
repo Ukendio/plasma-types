@@ -57,5 +57,5 @@ export interface Runtime {
 
 	scope<T extends Array<unknown>>(callback: (...args: T) => void, ...args: T): void;
 
-	widget<T extends Array<unknown>>(callback: (...args: T) => void): (...args: T) => void;
+	widget<T extends Array<unknown>, C>(callback: (...args: T) => C): (...args: T) => C;
 }
