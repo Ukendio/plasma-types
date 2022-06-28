@@ -10,6 +10,5 @@
 		"editor.formatOnSave": true
 	},
 	"eslint.run": "onType",
-	"eslint.format.enable": true,
-	"cSpell.words": ["Topo"]
+	"eslint.format.enable": true
 }
