@@ -39,25 +39,30 @@ type PlasmaStackFrame = {
 };
 
 export interface Runtime {
-	createContext<T>(name: string): Context<T>;
+	createContext<T>(this: void, name: string): Context<T>;
 
-	useContext<T>(context: Context<T>): T;
+	useContext<T>(this: void, context: Context<T>): T;
 
-	provideContext<T>(context: Context<T>, value: T): void;
+	provideContext<T>(this: void, context: Context<T>, value: T): void;
 
-	useEffect(callback: () => (() => void) | void, ...dependencies: Array<unknown>): void;
+	useEffect(this: void, callback: () => (() => void) | void, ...dependencies: Array<unknown>): void;
 
-	useState<T>(initialValue: T): LuaTuple<[T, (newValue: T | ((currentValue: T) => T)) => void]>;
+	useState<T>(this: void, initialValue: T): LuaTuple<[T, (newValue: T | ((currentValue: T) => T)) => void]>;
 
-	useKey(key: string | number): void;
+	useKey(this: void, key: string | number): void;
 
-	useInstance<T extends Instance>(creator: () => T | LuaTuple<[T, GuiObject?]>): T;
+	useInstance<T extends Instance>(this: void, creator: () => T | LuaTuple<[T, GuiObject?]>): T;
 
-	start<T extends Array<unknown>>(rootNode: Node, callback: (...args: T) => void, ...args: T): PlasmaStackFrame;
+	start<T extends Array<unknown>>(
+		this: void,
+		rootNode: Node,
+		callback: (...args: T) => void,
+		...args: T
+	): PlasmaStackFrame;
 
-	continue<T extends Array<unknown>>(frame: PlasmaStackFrame, fn: () => void, ...args: T): void;
+	continue<T extends Array<unknown>>(this: void, frame: PlasmaStackFrame, fn: () => void, ...args: T): void;
 
-	scope<T extends Array<unknown>>(callback: (...args: T) => void, ...args: T): void;
+	scope<T extends Array<unknown>>(this: void, callback: (...args: T) => void, ...args: T): void;
 
-	widget<T extends Array<unknown>, C>(callback: (...args: T) => C): (...args: T) => C;
+	widget<T extends Array<unknown>, C>(this: void, callback: (...args: T) => C): (...args: T) => C;
 }
