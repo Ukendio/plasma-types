@@ -49,7 +49,7 @@ export interface Runtime {
 
 	useState<T>(initialValue: T): LuaTuple<[T, (newValue: T | ((currentValue: T) => T)) => void]>;
 
-	useInstance<T extends Instance>(creator: () => T): T;
+	useInstance<T extends Instance>(creator: () => T | LuaTuple<[T, GuiObject?]>): T;
 
 	start<T extends Array<unknown>>(rootNode: Node, callback: (...args: T) => void, ...args: T): PlasmaStackFrame;
 
