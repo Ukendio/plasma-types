@@ -38,7 +38,7 @@ type PlasmaStackFrame = {
 	childCounts: Map<TopoKey, number>;
 };
 
-interface Runtime {
+export interface Runtime {
 	createContext<T>(name: string): Context<T>;
 
 	useContext<T>(context: Context<T>): T;
