@@ -6,11 +6,13 @@ local Style = require(script.Style)
 return {
 	new = Runtime.new,
 	start = Runtime.start,
+	continue = Runtime.continue,
 	scope = Runtime.scope,
 	widget = Runtime.widget,
 	useState = Runtime.useState,
 	useInstance = Runtime.useInstance,
 	useEffect = Runtime.useEffect,
+	useKey = Runtime.useKey,
 
 	useStyle = Style.get,
 	setStyle = Style.set,
@@ -26,4 +28,8 @@ return {
 	spinner = require(script.widgets.spinner),
 	checkbox = require(script.widgets.checkbox),
 	arrow = require(script.widgets.arrow),
+	heading = require(script.widgets.heading),
+	label = require(script.widgets.label),
+	slider = require(script.widgets.slider),
+	space = require(script.widgets.space),
 }

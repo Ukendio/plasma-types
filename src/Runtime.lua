@@ -21,9 +21,10 @@ type StackFrame = {
 		[any]: any,
 	},
 	childrenCount: number,
-	effectCounts: TopoKey,
-	stateCounts: TopoKey,
-	childCounts: TopoKey,
+	effectCounts: { [TopoKey]: number },
+	stateCounts: { [TopoKey]: number },
+	childCounts: { [TopoKey]: number },
+	discriminator: string | number,
 }
 
 local stack: { StackFrame } = {}
@@ -156,7 +157,8 @@ function Runtime.useEffect(callback: () -> () | () -> () -> (), ...)
 
 	local file = debug.info(2, "s")
 	local line = debug.info(2, "l")
-	local baseKey = string.format("%s:%d", file, line)
+	local baseKey = string.format("%s:%s:%d", tostring(frame.discriminator) or "", file, line)
+
 	frame.effectCounts[baseKey] = (frame.effectCounts[baseKey] or 0) + 1
 	local key = string.format("%s:%d", baseKey, frame.effectCounts[baseKey])
 
@@ -215,7 +217,7 @@ function Runtime.useState<T>(initialValue: T): T
 
 	local file = debug.info(2, "s")
 	local line = debug.info(2, "l")
-	local baseKey = string.format("%s:%d", file, line)
+	local baseKey = string.format("%s:%s:%d", tostring(frame.discriminator) or "", file, line)
 	frame.stateCounts[baseKey] = (frame.stateCounts[baseKey] or 0) + 1
 	local key = string.format("%s:%d", baseKey, frame.stateCounts[baseKey])
 
@@ -233,6 +235,20 @@ function Runtime.useState<T>(initialValue: T): T
 	end
 
 	return states[key], setter
+end
+
+--[=[
+	@within Plasma
+	@param key
+
+	Specify a key by which to store all future state in this scope. This is similar to React's `key` prop.
+
+	This is important to use to prevent state from one source being still being applied when it should actually reset.
+]=]
+function Runtime.useKey(key: string | number)
+	local frame = stack[#stack]
+
+	frame.discriminator = key
 end
 
 --[=[
@@ -288,13 +304,14 @@ function Runtime.nearestStackFrameWithInstance(): StackFrame?
 	return nil
 end
 
-local function scope(level, fn, ...)
+local function scope(level, scopeKey, fn, ...)
 	local parentFrame = stack[#stack]
 	local parentNode = parentFrame.node
 
 	local file = debug.info(1 + level, "s")
 	local line = debug.info(1 + level, "l")
-	local baseKey = string.format("%s:%d", file, line)
+	local baseKey = string.format("%s:%s:%s:%d", scopeKey, tostring(parentFrame.discriminator) or "", file, line)
+
 	parentFrame.childCounts[baseKey] = (parentFrame.childCounts[baseKey] or 0) + 1
 	local key = string.format("%s:%d", baseKey, parentFrame.childCounts[baseKey])
 
@@ -342,8 +359,9 @@ end
 --[=[
 	@within Plasma
 	@param rootNode Node -- A node created by `Plasma.new`.
-	@param callback (...: T) -> ()
+	@param fn (...: T) -> ()
 	@param ... T -- Additional parameters to `callback`
+	@return ContinueHandle -- An object that can be passed to Plasma.continue
 
 	Begins a new frame for this Plasma instance. The `callback` is invoked immediately.
 	Code run in the `callback` function that uses plasma APIs will be associated with this Plasma node.
@@ -389,8 +407,8 @@ function Runtime.start(rootNode: Node, fn, ...)
 	end
 
 	stack[1] = newStackFrame(rootNode)
-	scope(2, handler, ...)
-	table.remove(stack)
+	scope(2, "root", handler, ...)
+	local continueHandle = table.remove(stack)
 
 	for childKey, childNode in pairs(rootNode.children) do
 		if childNode.generation ~= rootNode.generation then
@@ -400,11 +418,37 @@ function Runtime.start(rootNode: Node, fn, ...)
 	end
 
 	debug.profileend()
+
+	return continueHandle
+end
+
+--[=[
+	Continue the Plasma frame with a new handler function. Calling this will not trigger any cleanup that typically
+	happens every frame.
+
+	This is intended to be used to continue creating UI within the same frame that you started on. You should call
+	[Plasma.start] once per frame, then `Plasma.continue` any number of times after that, within the same frame.
+
+	@within Plasma
+	@param continueHandle ContinueHandle -- An object returned by Plasma.start
+	@param fn (...: T) -> ()
+	@param ... T -- Additional parameters to `callback`
+]=]
+function Runtime.continue(frame, fn, ...)
+	if #stack > 0 then
+		error("Runtime.continue cannot be called while Runtime.start is already running", 2)
+	end
+
+	stack[1] = frame
+
+	scope(2, "root", fn, ...)
+
+	table.remove(stack)
 end
 
 --[=[
 	@within Plasma
-	@param callback (...: T) -> ()
+	@param fn (...: T) -> ()
 	@param ... T -- Additional parameters to `callback`
 
 	Begins a new scope. This function may only be called within a `Plasma.start` callback.
@@ -413,20 +457,23 @@ end
 	Beginning a new scope associates all further calls to Plasma APIs with a nested scope inside this one.
 ]=]
 function Runtime.scope(fn, ...)
-	return scope(2, fn, ...)
+	return scope(2, "", fn, ...)
 end
 
 --[=[
 	@within Plasma
-	@param callback (...: T) -> () -- The widget function
+	@param fn (...: T) -> () -- The widget function
 	@return (...: T) -> () -- A function which can be called to create the widget
 
-	This function takes a widget funtion and returns a function that automatically starts a new scope when the function
+	This function takes a widget function and returns a function that automatically starts a new scope when the function
 	is called.
 ]=]
 function Runtime.widget(fn)
+	local file, line = debug.info(2, "sl")
+	local scopeKey = string.format("%s+%d", file, line)
+
 	return function(...)
-		return scope(2, fn, ...)
+		return scope(2, scopeKey, fn, ...)
 	end
 end
 

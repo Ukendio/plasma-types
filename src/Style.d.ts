@@ -6,6 +6,16 @@ interface DefaultStyle {
 	textColor: Color3;
 }
 
-export function get<T extends { [index: string]: unknown }>(): T | DefaultStyle;
+type Id<T> = T;
+
+type PatchOverride<Base, Overrides> = Id<{
+	[K in keyof Base | keyof Overrides]: K extends keyof Overrides
+		? Overrides[K]
+		: K extends keyof Base
+		? Base[K]
+		: never;
+}>;
+
+export function get<T extends { [index: string]: unknown }>(): PatchOverride<DefaultStyle, T>;
 
 export function set<T extends { [index: string]: unknown }>(styleFragment: T): void;

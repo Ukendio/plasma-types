@@ -27,20 +27,35 @@ type Node = {
 	generation: number;
 };
 
-export function createContext<T>(name: string): Context<T>;
+type TopoKey = string;
 
-export function useContext<T>(context: Context<T>): T;
+type PlasmaStackFrame = {
+	node: Node;
+	contextValues: Set<Context<unknown>>;
+	childrenCount: number;
+	effectCounts: Map<TopoKey, number>;
+	stateCounts: Map<TopoKey, number>;
+	childCounts: Map<TopoKey, number>;
+};
 
-export function provideContext<T>(context: Context<T>, value: T): void;
+interface Runtime {
+	createContext<T>(name: string): Context<T>;
 
-export function useEffect(callback: () => (() => void) | void, ...dependencies: Array<unknown>): void;
+	useContext<T>(context: Context<T>): T;
 
-export function useState<T>(initialValue: T): LuaTuple<[T, (newValue: T | ((currentValue: T) => T)) => void]>;
+	provideContext<T>(context: Context<T>, value: T): void;
 
-export function useInstance<T extends Instance>(creator: () => T): T;
+	useEffect(callback: () => (() => void) | void, ...dependencies: Array<unknown>): void;
 
-export function start<T extends Array<unknown>>(rootNode: Node, callback: (...args: T) => void, ...args: T): void;
+	useState<T>(initialValue: T): LuaTuple<[T, (newValue: T | ((currentValue: T) => T)) => void]>;
 
-export function scope<T extends Array<unknown>>(callback: (...args: T) => void, ...args: T): void;
+	useInstance<T extends Instance>(creator: () => T): T;
 
-export function widget<T extends Array<unknown>>(callback: (...args: T) => void): (...args: T) => void;
+	start<T extends Array<unknown>>(rootNode: Node, callback: (...args: T) => void, ...args: T): PlasmaStackFrame;
+
+	continue<T extends Array<unknown>>(frame: PlasmaStackFrame, fn: () => void, ...args: T): void;
+
+	scope<T extends Array<unknown>>(callback: (...args: T) => void, ...args: T): void;
+
+	widget<T extends Array<unknown>>(callback: (...args: T) => void): (...args: T) => void;
+}
