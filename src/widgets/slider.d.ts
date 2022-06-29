@@ -1,1 +1,1 @@
-export function slider(max: number): void;
+export function slider(max: number): number;
