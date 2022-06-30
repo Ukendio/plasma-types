@@ -39,20 +39,6 @@ type PlasmaStackFrame = {
 };
 
 export interface Runtime {
-	createContext<T>(this: void, name: string): Context<T>;
-
-	useContext<T>(this: void, context: Context<T>): T;
-
-	provideContext<T>(this: void, context: Context<T>, value: T): void;
-
-	useEffect(this: void, callback: () => (() => void) | void, ...dependencies: Array<unknown>): void;
-
-	useState<T>(this: void, initialValue: T): LuaTuple<[T, (newValue: T | ((currentValue: T) => T)) => void]>;
-
-	useKey(this: void, key: string | number): void;
-
-	useInstance<T extends Instance>(this: void, creator: () => T | LuaTuple<[T, GuiObject?]>): T;
-
 	start<T extends Array<unknown>>(
 		this: void,
 		rootNode: Node,
@@ -60,9 +46,47 @@ export interface Runtime {
 		...args: T
 	): PlasmaStackFrame;
 
-	continue<T extends Array<unknown>>(this: void, frame: PlasmaStackFrame, fn: () => void, ...args: T): void;
+	continueFrame<T extends Array<unknown>>(
+		this: void,
+		continueHandle: PlasmaStackFrame,
+		fn: (...args: T) => void,
+		...args: T
+	): void;
+
+	beginFrame<T extends Array<unknown>>(
+		this: void,
+		rootNode: Node,
+		fn: (...args: T) => void,
+		...args: T
+	): PlasmaStackFrame;
+
+	finishFrame(this: void, rootNode: Node): void;
 
 	scope<T extends Array<unknown>>(this: void, callback: (...args: T) => void, ...args: T): void;
 
 	widget<T extends Array<unknown>, C>(this: void, callback: (...args: T) => C): (...args: T) => C;
+
+	useState<T>(this: void, initialValue: T): LuaTuple<[T, (newValue: T | ((currentValue: T) => T)) => void]>;
+
+	useInstance<T extends Instance>(this: void, creator: () => T | LuaTuple<[T, GuiObject?]>): T;
+
+	useEffect(this: void, callback: () => (() => void) | void, ...dependencies: Array<unknown>): void;
+
+	useKey(this: void, key: string | number): void;
+
+	setEventCallback(this: void, callback: EventCallback): void;
+
+	useEventCallback(this: void): EventCallback | undefined;
+
+	createContext<T>(this: void, name: string): Context<T>;
+
+	useContext<T>(this: void, context: Context<T>): T;
+
+	provideContext<T>(this: void, context: Context<T>, value: T): void;
 }
+
+export type EventCallback = <T extends Array<unknown>>(
+	instance: Instance,
+	discriminator: string,
+	fn: (...args: T) => void,
+) => void;
