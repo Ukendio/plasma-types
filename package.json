@@ -1,6 +1,6 @@
 {
   "name": "@rbxts/plasma",
-  "version": "0.1.0-ts.13",
+  "version": "0.3.0-ts.0",
   "description": "",
   "main": "out/init.lua",
   "directories": {
