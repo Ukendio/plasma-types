@@ -2,6 +2,7 @@ import { arrow } from "./arrow";
 import { blur } from "./blur";
 import { button } from "./button";
 import { checkbox } from "./checkbox";
+import { error } from "./error";
 import { heading } from "./heading";
 import { label } from "./label";
 import { portal } from "./portal";
@@ -24,4 +25,5 @@ export type Widgets = {
 	label: typeof label;
 	slider: typeof slider;
 	space: typeof space;
+	error: typeof error;
 };
