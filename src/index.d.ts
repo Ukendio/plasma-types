@@ -24,6 +24,10 @@ declare namespace Plasma {
 	type PlasmaStackFrame = Runtime.PlasmaStackFrame;
 	type TopoKey = Runtime.TopoKey;
 
+	type DefaultStyle = Style.DefaultStyle;
+	type StyleId<T> = Style.Id<T>;
+	type StylePatchOverride<Base, Overrides> = Style.PatchOverride<Base, Overrides>;
+
 	type ButtonHandle = button.ButtonHandle;
 
 	type CheckboxOptions = checkbox.CheckboxOptions;
