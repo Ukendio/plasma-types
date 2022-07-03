@@ -13,7 +13,7 @@ import spinner from "./spinner";
 import table from "./table";
 import window from "./window";
 
-export type Widgets = {
+declare const Widgets: {
 	arrow: typeof arrow;
 	blur: typeof blur;
 	button: typeof button;
@@ -29,3 +29,5 @@ export type Widgets = {
 	table: typeof table;
 	window: typeof window;
 };
+
+export = Widgets;

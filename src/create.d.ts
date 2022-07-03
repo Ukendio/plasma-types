@@ -1,4 +1,4 @@
-export function create<T extends keyof CreatableInstances>(
+declare function create<T extends keyof CreatableInstances>(
 	className: T,
 	props: Partial<WritableInstanceProperties<CreatableInstances[T]>> & {
 		[index: number]: Instance;
@@ -10,3 +10,5 @@ export function create<T extends keyof CreatableInstances>(
 			) => void;
 		}>,
 ): Instances[T];
+
+export = create;
