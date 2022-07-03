@@ -3,19 +3,19 @@ import create from "./create";
 import hydrateAutomaticSize from "./hydrateAutomaticSize";
 import Runtime from "./Runtime";
 import Style from "./Style";
-import window from "./widgets/window";
-import button from "./widgets/button";
-import portal from "./widgets/portal";
-import blur from "./widgets/blur";
-import row from "./widgets/row";
-import spinner from "./widgets/spinner";
-import checkbox from "./widgets/checkbox";
 import arrow from "./widgets/arrow";
+import blur from "./widgets/blur";
+import button from "./widgets/button";
+import checkbox from "./widgets/checkbox";
 import heading from "./widgets/heading";
 import label from "./widgets/label";
+import portal from "./widgets/portal";
+import row from "./widgets/row";
 import slider from "./widgets/slider";
 import space from "./widgets/space";
+import spinner from "./widgets/spinner";
 import table from "./widgets/table";
+import window from "./widgets/window";
 
 declare namespace Plasma {
 	type Node = Runtime.Node;
