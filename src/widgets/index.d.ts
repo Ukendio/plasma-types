@@ -10,6 +10,7 @@ import row from "./row";
 import slider from "./slider";
 import space from "./space";
 import spinner from "./spinner";
+import table from "./table";
 import window from "./window";
 
 export type Widgets = {
@@ -25,5 +26,6 @@ export type Widgets = {
 	space: typeof space;
 	slider: typeof slider;
 	spinner: typeof spinner;
+	table: typeof table;
 	window: typeof window;
 };
