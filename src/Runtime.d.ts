@@ -61,7 +61,7 @@ interface Runtime {
 		...args: T
 	): void;
 
-	beginFrame<T extends Array<unknown>>(
+	beginFrame<T extends ReadonlyArray<unknown>>(
 		this: void,
 		rootNode: Runtime.Node,
 		fn: (...args: T) => void,
@@ -70,15 +70,15 @@ interface Runtime {
 
 	finishFrame(this: void, rootNode: Runtime.Node): void;
 
-	scope<T extends Array<unknown>>(this: void, callback: (...args: T) => void, ...args: T): void;
+	scope<T extends ReadonlyArray<unknown>>(this: void, callback: (...args: T) => void, ...args: T): void;
 
-	widget<T extends Array<unknown>, C>(this: void, callback: (...args: T) => C): (...args: T) => C;
+	widget<T extends ReadonlyArray<unknown>, C>(this: void, callback: (...args: T) => C): (...args: T) => C;
 
 	useState<T>(this: void, initialValue: T): LuaTuple<[T, (newValue: T | ((currentValue: T) => T)) => void]>;
 
 	useInstance<T extends Instance>(this: void, creator: () => T | LuaTuple<[T, GuiObject?]>): T;
 
-	useEffect(this: void, callback: () => (() => void) | void, ...dependencies: Array<unknown>): void;
+	useEffect(this: void, callback: () => (() => void) | void, ...dependencies: ReadonlyArray<unknown>): void;
 
 	useKey(this: void, key: string | number): void;
 

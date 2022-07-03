@@ -4,6 +4,6 @@ declare namespace table {
 	}
 }
 
-declare function table(items: ReadonlyArray<ReadonlyArray<string>>, options: table.TableOptions): Frame;
+declare function table(items: ReadonlyArray<ReadonlyArray<string | (() => void)>>, options: table.TableOptions): Frame;
 
 export = table;
