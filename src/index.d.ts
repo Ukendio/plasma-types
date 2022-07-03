@@ -57,6 +57,10 @@ declare namespace Plasma {
 }
 
 interface Plasma extends Plasma.Widgets {
+	/**
+	 * @param rootInstance The root instance of which to mount all children. Likely a ScreenGui.
+	 * @returns An opaque object which holds persistent state about your UI.
+	 */
 	new (rootInstance: Instance): Runtime.Node;
 
 	start: typeof Runtime.start;
@@ -70,6 +74,8 @@ interface Plasma extends Plasma.Widgets {
 	useEffect: typeof Runtime.useEffect;
 	useKey: typeof Runtime.useKey;
 	setEventCallback: typeof Runtime.setEventCallback;
+	useContext: typeof Runtime.useContext;
+	createContext: typeof Runtime.createContext;
 
 	useStyle: typeof Style.get;
 	setStyle: typeof Style.set;

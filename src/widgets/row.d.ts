@@ -4,6 +4,7 @@ declare namespace row {
 	}
 }
 
+/** Lays out children horizontally */
 declare function row(children: () => void): void;
 
 declare function row(options: row.RowOptions, children: () => void): void;
