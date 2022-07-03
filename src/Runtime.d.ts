@@ -69,7 +69,7 @@ interface Runtime {
 		...args: T
 	): void;
 
-	beginFrame<T extends Array<unknown>>(
+	beginFrame<T extends ReadonlyArray<unknown>>(
 		this: void,
 		rootNode: Runtime.Node,
 		fn: (...args: T) => void,
@@ -78,24 +78,9 @@ interface Runtime {
 
 	finishFrame(this: void, rootNode: Runtime.Node): void;
 
-	/**
-	 * Begins a new scope. This function may only be called within a `Plasma.start` callback. The `callback` is invoked
-	 * immediately.
-	 *
-	 * Beginning a new scope associates all further calls to Plasma APIs with a nested scope inside this one.
-	 *
-	 * @param args Additional parameters to callback
-	 */
-	scope<T extends Array<unknown>>(this: void, callback: (...args: T) => void, ...args: T): void;
+	scope<T extends ReadonlyArray<unknown>>(this: void, callback: (...args: T) => void, ...args: T): void;
 
-	/**
-	 * This function takes a widget funtion and returns a function that automatically starts a new scope when the
-	 * function is called.
-	 *
-	 * @param callback The widget function
-	 * @returns A function which can be called to create the widget
-	 */
-	widget<T extends Array<unknown>, C>(this: void, callback: (...args: T) => C): (...args: T) => C;
+	widget<T extends ReadonlyArray<unknown>, C>(this: void, callback: (...args: T) => C): (...args: T) => C;
 
 	/**
 	 * ```lua
@@ -131,18 +116,7 @@ interface Runtime {
 	 */
 	useInstance<T extends Instance>(this: void, creator: () => T | LuaTuple<[T, GuiObject?]>): T;
 
-	/**
-	 * `useEffect` takes a callback as a parameter which is then only invoked if passed dependencies are different from
-	 * the last time this function was called. The callback is always invoked the first time this code path is reached.
-	 *
-	 * If no dependencies are passed, the callback only runs once.
-	 *
-	 * This function can be used to skip expensive work if none of the dependencies have changed since the last run. For
-	 * example, you might use this to set a bunch of properties in a widget if any of the inputs change.
-	 *
-	 * @param callback A callback function that optionally returns a cleanup function
-	 */
-	useEffect(this: void, callback: () => (() => void) | void, ...dependencies: Array<unknown>): void;
+	useEffect(this: void, callback: () => (() => void) | void, ...dependencies: ReadonlyArray<unknown>): void;
 
 	useKey(this: void, key: string | number): void;
 
