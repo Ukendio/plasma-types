@@ -38,9 +38,25 @@ declare namespace Plasma {
 
 	type WindowOptions = window.WindowOptions;
 	type WindowHandle = window.WindowHandle;
+
+	interface Widgets {
+		window: typeof window;
+		button: typeof button;
+		portal: typeof portal;
+		blur: typeof blur;
+		row: typeof row;
+		spinner: typeof spinner;
+		checkbox: typeof checkbox;
+		arrow: typeof arrow;
+		heading: typeof heading;
+		label: typeof label;
+		slider: typeof slider;
+		space: typeof space;
+		table: typeof table;
+	}
 }
 
-interface Plasma {
+interface Plasma extends Plasma.Widgets {
 	new (rootInstance: Instance): Runtime.Node;
 
 	start: typeof Runtime.start;
@@ -61,20 +77,6 @@ interface Plasma {
 	automaticSize: typeof automaticSize;
 	hydrateAutomaticSize: typeof hydrateAutomaticSize;
 	create: typeof create;
-
-	window: typeof window;
-	button: typeof button;
-	portal: typeof portal;
-	blur: typeof blur;
-	row: typeof row;
-	spinner: typeof spinner;
-	checkbox: typeof checkbox;
-	arrow: typeof arrow;
-	heading: typeof heading;
-	label: typeof label;
-	slider: typeof slider;
-	space: typeof space;
-	table: typeof table;
 }
 
 declare const Plasma: Plasma;
