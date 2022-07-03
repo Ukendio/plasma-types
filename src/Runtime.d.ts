@@ -1,66 +1,74 @@
-type Context<T> = T & {
-	/**
-	 * @hidden
-	 * @deprecated
-	 */
-	readonly _nominal_Context: unique symbol;
-};
+declare namespace Runtime {
+	type EventCallback = <T extends Array<unknown>>(
+		instance: Instance,
+		discriminator: string,
+		fn: (...args: T) => void,
+	) => void;
 
-type Node = {
-	/**
-	 * @hidden
-	 * @deprecated
-	 */
-	readonly _nominal_Node: unique symbol;
-
-	instance?: Instance;
-	containerInstance: Instance;
-	effects: {
-		[TopoKey: string]: {
-			lastDependencies?: Array<unknown>;
-			lastDependenciesLength: number;
-			destructor?: () => void;
-		};
+	type Context<T> = T & {
+		/**
+		 * @hidden
+		 * @deprecated
+		 */
+		readonly _nominal_Context: unique symbol;
 	};
-	states: { [TopoKey: string]: unknown };
-	children: { [TopoKey: string]: Node };
-	generation: number;
-};
 
-type TopoKey = string;
+	type Node = {
+		/**
+		 * @hidden
+		 * @deprecated
+		 */
+		readonly _nominal_Node: unique symbol;
 
-type PlasmaStackFrame = {
-	node: Node;
-	contextValues: Set<Context<unknown>>;
-	childrenCount: number;
-	effectCounts: Map<TopoKey, number>;
-	stateCounts: Map<TopoKey, number>;
-	childCounts: Map<TopoKey, number>;
-};
+		instance?: Instance;
+		containerInstance?: Instance;
+		effects: {
+			[TopoKey: Runtime.TopoKey]: {
+				lastDependencies?: Array<unknown>;
+				lastDependenciesLength: number;
+				destructor?: () => void;
+			};
+		};
+		states: { [TopoKey: Runtime.TopoKey]: unknown };
+		children: { [TopoKey: Runtime.TopoKey]: Runtime.Node };
+		generation: number;
+	};
 
-export interface Runtime {
+	type TopoKey = string;
+
+	type PlasmaStackFrame = {
+		node: Runtime.Node;
+		contextValues: Set<Runtime.Context<unknown>>;
+		childrenCount: number;
+		effectCounts: Map<Runtime.TopoKey, number>;
+		stateCounts: Map<Runtime.TopoKey, number>;
+		childCounts: Map<Runtime.TopoKey, number>;
+	};
+}
+
+interface Runtime {
 	start<T extends Array<unknown>>(
 		this: void,
-		rootNode: Node,
+		rootNode: Runtime.Node,
 		callback: (...args: T) => void,
 		...args: T
-	): PlasmaStackFrame;
+	): Runtime.PlasmaStackFrame;
 
 	continueFrame<T extends Array<unknown>>(
 		this: void,
-		continueHandle: PlasmaStackFrame,
+		continueHandle: Runtime.PlasmaStackFrame,
 		fn: (...args: T) => void,
 		...args: T
 	): void;
 
 	beginFrame<T extends Array<unknown>>(
 		this: void,
-		rootNode: Node,
+		rootNode: Runtime.Node,
 		fn: (...args: T) => void,
 		...args: T
-	): PlasmaStackFrame;
+	): Runtime.PlasmaStackFrame;
 
-	finishFrame(this: void, rootNode: Node): void;
+	finishFrame(this: void, rootNode: Runtime.Node): void;
 
 	scope<T extends Array<unknown>>(this: void, callback: (...args: T) => void, ...args: T): void;
 
@@ -74,19 +82,17 @@ export interface Runtime {
 
 	useKey(this: void, key: string | number): void;
 
-	setEventCallback(this: void, callback: EventCallback): void;
+	setEventCallback(this: void, callback: Runtime.EventCallback): void;
 
-	useEventCallback(this: void): EventCallback | undefined;
+	useEventCallback(this: void): Runtime.EventCallback | undefined;
 
-	createContext<T>(this: void, name: string): Context<T>;
+	createContext<T>(this: void, name: string): Runtime.Context<T>;
 
-	useContext<T>(this: void, context: Context<T>): T;
+	useContext<T>(this: void, context: Runtime.Context<T>): T;
 
-	provideContext<T>(this: void, context: Context<T>, value: T): void;
+	provideContext<T>(this: void, context: Runtime.Context<T>, value: T): void;
 }
 
-export type EventCallback = <T extends Array<unknown>>(
-	instance: Instance,
-	discriminator: string,
-	fn: (...args: T) => void,
-) => void;
+declare const Runtime: Runtime;
+
+export = Runtime;

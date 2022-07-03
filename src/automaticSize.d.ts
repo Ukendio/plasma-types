@@ -1,6 +1,10 @@
-interface LayoutOptions {
-	axis?: Enum.AutomaticSize;
-	maxSize?: UDim2;
+declare namespace automaticSize {
+	interface LayoutOptions {
+		axis?: Enum.AutomaticSize;
+		maxSize?: UDim2;
+	}
 }
 
-export function automaticSize(container: GuiObject, options?: LayoutOptions): RBXScriptConnection;
+declare function automaticSize(container: GuiObject, options?: automaticSize.LayoutOptions): RBXScriptConnection;
+
+export = automaticSize;
