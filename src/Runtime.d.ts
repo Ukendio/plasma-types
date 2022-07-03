@@ -1,11 +1,11 @@
 declare namespace Runtime {
-	export type EventCallback = <T extends Array<unknown>>(
+	type EventCallback = <T extends Array<unknown>>(
 		instance: Instance,
 		discriminator: string,
 		fn: (...args: T) => void,
 	) => void;
 
-	export type Context<T> = T & {
+	type Context<T> = T & {
 		/**
 		 * @hidden
 		 * @deprecated
@@ -13,7 +13,7 @@ declare namespace Runtime {
 		readonly _nominal_Context: unique symbol;
 	};
 
-	export type Node = {
+	type Node = {
 		/**
 		 * @hidden
 		 * @deprecated
@@ -34,9 +34,9 @@ declare namespace Runtime {
 		generation: number;
 	};
 
-	export type TopoKey = string;
+	type TopoKey = string;
 
-	export type PlasmaStackFrame = {
+	type PlasmaStackFrame = {
 		node: Runtime.Node;
 		contextValues: Set<Runtime.Context<unknown>>;
 		childrenCount: number;

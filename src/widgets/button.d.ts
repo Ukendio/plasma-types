@@ -1,5 +1,5 @@
 declare namespace button {
-	export interface ButtonHandle {
+	interface ButtonHandle {
 		clicked(): boolean;
 	}
 }

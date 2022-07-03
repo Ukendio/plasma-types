@@ -18,23 +18,23 @@ import space from "./widgets/space";
 import table from "./widgets/table";
 
 declare namespace Plasma {
-	export type Node = Runtime.Node;
-	export type Context<T> = Runtime.Context<T>;
-	export type EventCallback = Runtime.EventCallback;
-	export type PlasmaStackFrame = Runtime.PlasmaStackFrame;
-	export type TopoKey = Runtime.TopoKey;
+	type Node = Runtime.Node;
+	type Context<T> = Runtime.Context<T>;
+	type EventCallback = Runtime.EventCallback;
+	type PlasmaStackFrame = Runtime.PlasmaStackFrame;
+	type TopoKey = Runtime.TopoKey;
 
-	export type ButtonHandle = button.ButtonHandle;
+	type ButtonHandle = button.ButtonHandle;
 
-	export type CheckboxOptions = checkbox.CheckboxOptions;
-	export type CheckboxHandle = checkbox.CheckboxHandle;
+	type CheckboxOptions = checkbox.CheckboxOptions;
+	type CheckboxHandle = checkbox.CheckboxHandle;
 
-	export type RowOptions = row.RowOptions;
+	type RowOptions = row.RowOptions;
 
-	export type TableOptions = table.TableOptions;
+	type TableOptions = table.TableOptions;
 
-	export type WindowOptions = window.WindowOptions;
-	export type WindowHandle = window.WindowHandle;
+	type WindowOptions = window.WindowOptions;
+	type WindowHandle = window.WindowHandle;
 }
 
 interface Plasma {

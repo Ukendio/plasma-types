@@ -1,5 +1,5 @@
 declare namespace automaticSize {
-	export interface LayoutOptions {
+	interface LayoutOptions {
 		axis?: Enum.AutomaticSize;
 		maxSize?: UDim2;
 	}
