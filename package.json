@@ -2,10 +2,7 @@
 	"name": "@rbxts/plasma",
 	"version": "0.3.0-ts.6",
 	"description": "",
-	"main": "out/init.lua",
-	"directories": {
-		"lib": "lib"
-	},
+	"main": "src/init.lua",
 	"devDependencies": {
 		"@rbxts/compiler-types": "github:roblox-ts/compiler-types",
 		"@rbxts/types": "^1.0.616",
@@ -19,11 +16,7 @@
 		"roblox-ts": "^1.3.3-dev-edb2a9e",
 		"typescript": "^4.7.4"
 	},
-	"scripts": {
-		"build": "rbxtsc",
-		"watch": "rbxtsc -w",
-		"prepublishOnly": "npm run build"
-	},
+	"scripts": {},
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/Ukendio/Plasma.git"
@@ -35,9 +28,9 @@
 		"url": "https://github.com/Ukendio/Plasma/issues"
 	},
 	"homepage": "https://github.com/Ukendio/Plasma#readme",
-	"types": "out/index.d.ts",
+	"types": "src/index.d.ts",
 	"files": [
-		"out",
+		"src",
 		"!**/*.tsbuildinfo"
 	],
 	"publishConfig": {
