@@ -5,8 +5,8 @@ declare namespace checkbox {
 	}
 
 	interface CheckboxHandle {
-		checked: () => boolean;
-		clicked: () => boolean;
+		checked(): boolean;
+		clicked(): boolean;
 	}
 }
 

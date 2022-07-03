@@ -1,6 +1,6 @@
 declare namespace button {
 	interface ButtonHandle {
-		clicked: () => boolean;
+		clicked(): boolean;
 	}
 }
 

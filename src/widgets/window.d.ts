@@ -7,7 +7,7 @@ declare namespace window {
 	}
 
 	interface WindowHandle {
-		closed: () => boolean;
+		closed(): boolean;
 	}
 }
 
