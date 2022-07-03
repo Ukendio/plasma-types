@@ -19,8 +19,17 @@ declare namespace Style {
 }
 
 interface Style {
-	get: <T extends { [index: string]: unknown } | undefined>() => Style.PatchOverride<Style.DefaultStyle, T>;
-	set: <T extends { [index: string]: unknown }>(styleFragment: T) => void;
+	/**
+	 * Returns the current style information, with styles that are set more recently in the tree overriding styles that
+	 * were set further up. In this way, styles cascade downwards, similar to CSS.
+	 */
+	get<T extends { [index: string]: unknown } | undefined>(this: void): Style.PatchOverride<Style.DefaultStyle, T>;
+
+	/**
+	 * Defines style for any subsequent calls in this scope. Merges with any existing styles.
+	 * @param styleFragment A dictionary of style information
+	 */
+	set<T extends { [index: string]: unknown }>(this: void, styleFragment: T): void;
 }
 
 declare const Style: Style;
