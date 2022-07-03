@@ -25,8 +25,7 @@ declare namespace Plasma {
 	type TopoKey = Runtime.TopoKey;
 
 	type DefaultStyle = Style.DefaultStyle;
-	type StyleId<T> = Style.Id<T>;
-	type StylePatchOverride<Base, Overrides> = Style.PatchOverride<Base, Overrides>;
+	type PatchOverride<Base, Overrides> = Style.PatchOverride<Base, Overrides>;
 
 	type ButtonHandle = button.ButtonHandle;
 
