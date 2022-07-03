@@ -1,1 +1,3 @@
-export function window(title: string, children: () => void): void;
+declare function window(title: string, children: () => void): void;
+
+export = window;

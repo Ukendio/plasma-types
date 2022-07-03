@@ -1,1 +1,3 @@
-export function space(size: number): void;
+declare function space(size: number): void;
+
+export = space;

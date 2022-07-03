@@ -1,1 +1,3 @@
-export function heading(text: string): void;
+declare function heading(text: string): void;
+
+export = heading;

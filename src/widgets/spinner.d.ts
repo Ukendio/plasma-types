@@ -1,1 +1,3 @@
-export function spinner(...args: Array<unknown>): void;
+declare function spinner(...args: Array<unknown>): void;
+
+export = spinner;

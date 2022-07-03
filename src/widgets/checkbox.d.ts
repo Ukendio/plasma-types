@@ -3,4 +3,6 @@ interface CheckboxWidgetHandle {
 	clicked(): boolean;
 }
 
-export function checkbox(label: string, options?: { checked?: boolean; disabled?: boolean }): CheckboxWidgetHandle;
+declare function checkbox(label: string, options?: { checked?: boolean; disabled?: boolean }): CheckboxWidgetHandle;
+
+export = checkbox;

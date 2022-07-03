@@ -1,1 +1,3 @@
-export function blur(size: number): void;
+declare function blur(size: number): void;
+
+export = blur;

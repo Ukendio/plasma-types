@@ -1,1 +1,3 @@
-export function portal(targetInstance: Instance, children: () => void): void;
+declare function portal(targetInstance: Instance, children: () => void): void;
+
+export = portal;

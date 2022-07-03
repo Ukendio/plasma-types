@@ -1,1 +1,3 @@
-export function slider(max: number): number;
+declare function slider(max: number): number;
+
+export = slider;
