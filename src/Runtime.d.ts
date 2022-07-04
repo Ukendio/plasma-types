@@ -104,17 +104,16 @@ interface Runtime {
 	useState<T>(this: void, initialValue: T): LuaTuple<[T, (newValue: T | ((currentValue: T) => T)) => void]>;
 
 	/**
-	 * `useInstance` takes a callback which should be used to create the initial UI for the widget. The callback is only
-	 * ever invoked on the first time this widget runs and never again. The callback should return the instance it
-	 * created. The callback can optionally return a second value, which is the instance where children of this widget
-	 * should be placed. Otherwise, children are placed in the first instance returned.
-	 *
-	 * `useInstance` returns the instance returned by the `creator` callback on the initial call and all further calls.
-	 *
-	 * @param creator A callback which creates the widget and returns it
-	 * @returns Returns the instance returned by creator
+	 * `useInstance` takes a callback which should be used to create the initial UI for the widget.
+	 * The callback is only ever invoked on the first time this widget runs and never again.
+	 * The callback should return the instance it created.
+	 * The callback can optionally return a second value, which is the instance where children of this widget should be
+	 * placed. Otherwise, children are placed in the first instance returned.
+
+ 	 * `useInstance` returns the `ref` table that is passed to it. You can use this to create references to objects
+	 * you want to update in the widget body.
 	 */
-	useInstance<T extends Instance>(this: void, creator: () => T | LuaTuple<[T, GuiObject?]>): T;
+	useInstance<T extends object>(this: void, creator: (ref: T) => Instance | LuaTuple<[Instance, GuiObject?]>): T;
 
 	useEffect(this: void, callback: () => (() => void) | void, ...dependencies: ReadonlyArray<unknown>): void;
 
