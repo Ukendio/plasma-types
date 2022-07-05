@@ -2,6 +2,7 @@ declare namespace slider {
 	interface SliderOptions {
 		min?: number;
 		max?: number;
+		initial?: number;
 	}
 }
 
