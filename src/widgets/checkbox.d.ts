@@ -41,6 +41,6 @@ declare namespace checkbox {
  *
  * @param label The label for the checkbox
  */
-declare function checkbox(label: string, options?: checkbox.CheckboxOptions): checkbox.CheckboxHandle;
+declare function checkbox(text: string, options?: checkbox.CheckboxOptions): checkbox.CheckboxHandle;
 
 export = checkbox;

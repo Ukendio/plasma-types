@@ -22,6 +22,6 @@ declare namespace button {
  *
  * @param label The label for the button
  */
-declare function button(label: string): button.ButtonHandle;
+declare function button(text: string): button.ButtonHandle;
 
 export = button;

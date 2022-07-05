@@ -4,7 +4,7 @@ local Style = require(script.Parent.Parent.Style)
 local create = require(script.Parent.Parent.create)
 local automaticSize = require(script.Parent.Parent.automaticSize)
 
-local cell = Runtime.widget(function(text)
+local cell = Runtime.widget(function(text, font)
 	local refs = Runtime.useInstance(function(ref)
 		local style = Style.get()
 
@@ -16,6 +16,7 @@ local cell = Runtime.widget(function(text)
 			TextColor3 = style.textColor,
 			TextSize = 20,
 			TextXAlignment = Enum.TextXAlignment.Left,
+			RichText = true,
 
 			create("UIPadding", {
 				PaddingBottom = UDim.new(0, 8),
@@ -26,30 +27,78 @@ local cell = Runtime.widget(function(text)
 		})
 	end)
 
+	refs.label.Font = font or Enum.Font.SourceSans
 	refs.label.Text = text
 end)
 
-local row = Runtime.widget(function(columns, darken)
-	Runtime.useInstance(function()
-		return create("Frame", {
+local row = Runtime.widget(function(columns, darken, selectable, font)
+	local clicked, setClicked = Runtime.useState(false)
+	local hovering, setHovering = Runtime.useState(false)
+
+	local selected = columns.selected
+
+	local refs = Runtime.useInstance(function(ref)
+		return create("TextButton", {
+			[ref] = "row",
 			BackgroundTransparency = if darken then 0.7 else 1,
 			BackgroundColor3 = Color3.fromRGB(0, 0, 0),
+			AutoButtonColor = false,
+			Text = "",
+			Active = false,
+
+			MouseEnter = function()
+				setHovering(true)
+			end,
+
+			MouseLeave = function()
+				setHovering(false)
+			end,
+
+			Activated = function()
+				setClicked(true)
+			end,
 		})
 	end)
 
-	for _, column in columns do
+	refs.row.Active = selectable and not selected or false
+
+	local transparency = 1
+
+	if selected then
+		transparency = 0
+	elseif hovering and selectable then
+		transparency = 0.4
+	elseif darken then
+		transparency = 0.7
+	end
+
+	refs.row.BackgroundTransparency = transparency
+	refs.row.BackgroundColor3 = selected and Color3.fromHex("bd515c") or Color3.fromRGB(0, 0, 0)
+
+	for _, column in ipairs(columns) do
 		if type(column) == "function" then
-			return Runtime.scope(column)
+			Runtime.scope(column)
 		else
-			cell(column)
+			cell(column, font)
 		end
 	end
+
+	return {
+		clicked = function()
+			if clicked then
+				setClicked(false)
+				return true
+			end
+			return false
+		end,
+	}
 end)
 
 --[=[
 	@within Plasma
 	@function table
 	@param items {{string}}
+	@param options {marginTop?: number, selectable?: boolean, font?: Font, headings?: boolean}
 	@tag widgets
 
 	A table widget. Items is a list of rows, with each row being a list of cells.
@@ -66,7 +115,7 @@ end)
 return Runtime.widget(function(items, options)
 	options = options or {}
 
-	local refs = Runtime.useInstance(function(ref)
+	Runtime.useInstance(function(ref)
 		create("Frame", {
 			[ref] = "table",
 			BackgroundTransparency = 1,
@@ -78,7 +127,15 @@ return Runtime.widget(function(items, options)
 			}),
 		})
 
-		ref.fix = function()
+		local connection
+
+		connection = ref.table:GetPropertyChangedSignal("Parent"):Connect(function()
+			connection:Disconnect()
+			connection = nil
+
+			RunService.Heartbeat:Wait()
+			RunService.Heartbeat:Wait()
+
 			-- Wtf roblox
 
 			for _, child in ref.table:GetChildren() do
@@ -94,18 +151,6 @@ return Runtime.widget(function(items, options)
 					child.Visible = true
 				end
 			end
-		end
-
-		local connection
-
-		connection = ref.table:GetPropertyChangedSignal("Parent"):Connect(function()
-			connection:Disconnect()
-			connection = nil
-
-			RunService.Heartbeat:Wait()
-			RunService.Heartbeat:Wait()
-
-			ref.fix()
 		end)
 
 		automaticSize(ref.table)
@@ -113,13 +158,30 @@ return Runtime.widget(function(items, options)
 		return ref.table
 	end)
 
+	local selected, setSelected = Runtime.useState()
+
 	for i, columns in items do
-		row(columns, i % 2 == 0)
+		local selectable = options.selectable
+		local font = options.font
+
+		if options.headings and i == 1 then
+			selectable = false
+			font = Enum.Font.GothamBold
+		end
+
+		local rowClicked = row(columns, i % 2 == 1, selectable, font):clicked()
+
+		if rowClicked then
+			setSelected(columns)
+		end
 	end
 
-	Runtime.useEffect(function()
-		refs.fix()
-	end, #items)
-
-	return refs.table
+	return {
+		selected = function()
+			if selected then
+				setSelected(nil)
+				return selected
+			end
+		end,
+	}
 end)

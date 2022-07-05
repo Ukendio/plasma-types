@@ -1,3 +1,4 @@
+local GuiService = game:GetService("GuiService")
 local UserInputService = game:GetService("UserInputService")
 
 --[=[
@@ -87,7 +88,14 @@ return Runtime.widget(function(options, fn)
 						and not ref.frame.Parent:IsA("ScreenGui")
 					then
 						local beforePosition = ref.frame.AbsolutePosition
-						ref.frame.Parent = ref.frame:FindFirstAncestorOfClass("ScreenGui")
+
+						local screenGui = ref.frame:FindFirstAncestorOfClass("ScreenGui")
+
+						if screenGui.IgnoreGuiInset then
+							beforePosition += GuiService:GetGuiInset()
+						end
+
+						ref.frame.Parent = screenGui
 						ref.frame.Position = UDim2.new(0, beforePosition.X, 0, beforePosition.Y)
 					end
 
@@ -146,6 +154,7 @@ return Runtime.widget(function(options, fn)
 					TextXAlignment = Enum.TextXAlignment.Left,
 					TextYAlignment = Enum.TextYAlignment.Top,
 					TextTruncate = Enum.TextTruncate.AtEnd,
+					RichText = true,
 				}),
 
 				c("TextButton", {
@@ -243,7 +252,6 @@ return Runtime.widget(function(options, fn)
 		automaticSize(ref.frame)
 
 		return ref.frame, ref.container
-
 	end)
 
 	if type(options) == "string" then
@@ -266,7 +274,7 @@ return Runtime.widget(function(options, fn)
 	refs.title.Text = options.title and spaces .. string.upper(options.title) or ""
 
 	Runtime.useEffect(function()
-		refs.container:SetAttribute("maxSize", options.maxSize or Vector2.new(math.huge, 500))
+		refs.container:SetAttribute("maxSize", options.maxSize or Vector2.new(2000, 500))
 	end, options.maxSize)
 
 	Runtime.useEffect(function()

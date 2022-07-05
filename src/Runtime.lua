@@ -33,7 +33,6 @@ type StackFrame = {
 
 local stack: { StackFrame } = {}
 
-local yieldedThread
 local recentErrors = {}
 local recentErrorLastTime = 0
 
@@ -331,7 +330,17 @@ local function scope(level, scopeKey, fn, ...)
 	currentNode.generation = parentNode.generation
 
 	table.insert(stack, newStackFrame(currentNode))
-	local success, widgetHandle = xpcall(fn, debug.traceback, ...)
+	local thread = coroutine.create(fn)
+
+	local success, widgetHandle = coroutine.resume(thread, ...)
+
+	if coroutine.status(thread) ~= "dead" then
+		success = false
+		widgetHandle =
+			"Plasma: Handler passed to Plasma.start yielded! Yielding is not allowed and the handler thread has been closed."
+
+		coroutine.close(thread)
+	end
 
 	if not success then
 		if os.clock() - recentErrorLastTime > 10 then
@@ -339,15 +348,17 @@ local function scope(level, scopeKey, fn, ...)
 			recentErrors = {}
 		end
 
-		if not recentErrors[widgetHandle] then
-			task.spawn(error, tostring(widgetHandle))
+		local errorValue = debug.traceback(thread, tostring(widgetHandle))
+
+		if not recentErrors[errorValue] then
+			task.spawn(error, tostring(errorValue))
 			warn("Plasma: The above error will be suppressed for the next 10 seconds")
-			recentErrors[widgetHandle] = true
+			recentErrors[errorValue] = true
 		end
 
 		local errorWidget = require(script.Parent.widgets.error)
 
-		errorWidget(tostring(widgetHandle))
+		errorWidget(tostring(errorValue))
 	end
 
 	table.remove(stack)
@@ -375,56 +386,9 @@ end
 	If this function is used, `Plasma.beginFrame`, `Plasma.continueFrame`, and `Plasma.finishFrame` should not be used.
 ]=]
 function Runtime.start(rootNode: Node, fn, ...)
-	if yieldedThread then
-		if coroutine.status(yieldedThread) ~= "dead" then
-			return
-		end
-		yieldedThread = nil
-		warn("Plasma: Erroneously yielded thread has resumed, UI is no longer blocked.")
-	end
+	Runtime.beginFrame(rootNode, fn, ...)
 
-	if #stack > 0 then
-		error("Runtime.start cannot be called while Runtime.start is already running", 2)
-	end
-
-	debug.profilebegin("Plasma")
-
-	if rootNode.generation == 0 then
-		rootNode.generation = 1
-	else
-		rootNode.generation = 0
-	end
-
-	local handler = function(...)
-		local thread = coroutine.running()
-
-		task.defer(function()
-			if coroutine.status(thread) ~= "dead" then
-				task.spawn(
-					error,
-					"Plasma: Handler passed to Plasma.start yielded! Yielding is not allowed and will lead to unexpected results."
-				)
-				warn("Plasma UI will not update until the yielded thread has resumed...")
-
-				yieldedThread = thread
-			end
-		end)
-
-		return fn(...)
-	end
-
-	stack[1] = newStackFrame(rootNode)
-	scope(2, "root", handler, ...)
-	table.remove(stack)
-
-	for childKey, childNode in pairs(rootNode.children) do
-		if childNode.generation ~= rootNode.generation then
-			destroyNode(childNode)
-			rootNode.children[childKey] = nil
-		end
-	end
-
-	debug.profileend()
+	Runtime.finishFrame(rootNode)
 end
 
 --[=[
