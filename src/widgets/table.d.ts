@@ -7,6 +7,7 @@ declare namespace table {
 
 	interface TableHandle {
 		selected(): boolean;
+		hovered(): boolean;
 	}
 }
 

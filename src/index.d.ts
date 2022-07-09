@@ -8,6 +8,7 @@ import blur from "./widgets/blur";
 import button from "./widgets/button";
 import checkbox from "./widgets/checkbox";
 import heading from "./widgets/heading";
+import highlight from "./widgets/highlight";
 import label from "./widgets/label";
 import portal from "./widgets/portal";
 import row from "./widgets/row";
@@ -39,6 +40,8 @@ declare namespace Plasma {
 	type WindowOptions = window.WindowOptions;
 	type WindowHandle = window.WindowHandle;
 
+	type HighlightOptions = highlight.HighlightOptions;
+
 	interface Widgets {
 		window: typeof window;
 		button: typeof button;
@@ -53,6 +56,7 @@ declare namespace Plasma {
 		slider: typeof slider;
 		space: typeof space;
 		table: typeof table;
+		highlight: typeof highlight;
 	}
 }
 
