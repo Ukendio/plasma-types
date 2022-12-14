@@ -121,7 +121,10 @@ interface Runtime {
  	 * `useInstance` returns the `ref` table that is passed to it. You can use this to create references to objects
 	 * you want to update in the widget body.
 	 */
-	useInstance<T extends object>(this: void, creator: (ref: Runtime.PlasmaRef) => Instance | LuaTuple<[Instance, GuiObject?]>): T;
+	useInstance<T extends { [index: string]: Instance }>(
+		this: void,
+		creator: (ref: Runtime.PlasmaRef) => Instance | LuaTuple<[Instance, GuiObject?]>,
+	): T;
 
 	useEffect(this: void, callback: () => (() => void) | void, ...dependencies: ReadonlyArray<unknown>): void;
 
