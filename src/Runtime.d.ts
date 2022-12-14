@@ -44,6 +44,14 @@ declare namespace Runtime {
 		stateCounts: Map<Runtime.TopoKey, number>;
 		childCounts: Map<Runtime.TopoKey, number>;
 	};
+
+	type PlasmaRef = symbol & {
+		/**
+		 * @hidden
+		 * @deprecated
+		 */
+		readonly _nominal_PlasmaRef: unique symbol;
+	};
 }
 
 interface Runtime {
@@ -113,7 +121,7 @@ interface Runtime {
  	 * `useInstance` returns the `ref` table that is passed to it. You can use this to create references to objects
 	 * you want to update in the widget body.
 	 */
-	useInstance<T extends object>(this: void, creator: (ref: T) => Instance | LuaTuple<[Instance, GuiObject?]>): T;
+	useInstance<T extends object>(this: void, creator: (ref: Runtime.PlasmaRef) => Instance | LuaTuple<[Instance, GuiObject?]>): T;
 
 	useEffect(this: void, callback: () => (() => void) | void, ...dependencies: ReadonlyArray<unknown>): void;
 
