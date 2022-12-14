@@ -1,6 +1,6 @@
 declare namespace row {
 	interface RowOptions {
-		padding?: Vector2;
+		padding?: UDim;
 	}
 }
 
