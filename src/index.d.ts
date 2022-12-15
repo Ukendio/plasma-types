@@ -78,8 +78,6 @@ interface Plasma extends Plasma.Widgets {
 	useEffect: typeof Runtime.useEffect;
 	useKey: typeof Runtime.useKey;
 	setEventCallback: typeof Runtime.setEventCallback;
-	useContext: typeof Runtime.useContext;
-	createContext: typeof Runtime.createContext;
 
 	useStyle: typeof Style.get;
 	setStyle: typeof Style.set;
