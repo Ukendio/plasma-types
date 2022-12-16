@@ -43,6 +43,7 @@ declare namespace Runtime {
 		effectCounts: Map<Runtime.TopoKey, number>;
 		stateCounts: Map<Runtime.TopoKey, number>;
 		childCounts: Map<Runtime.TopoKey, number>;
+		discriminator: string | number;
 	};
 
 	type PlasmaRef = symbol & {
@@ -158,6 +159,8 @@ interface Runtime {
 	 * @param value Any value you want to provide for this context
 	 */
 	provideContext<T>(this: void, context: Runtime.Context<T>, value: T): void;
+
+	nearestStackFrameWithInstance(this: void): Runtime.PlasmaStackFrame | undefined;
 }
 
 declare const Runtime: Runtime;
