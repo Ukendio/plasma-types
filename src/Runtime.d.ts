@@ -43,7 +43,7 @@ declare namespace Runtime {
 		effectCounts: Map<Runtime.TopoKey, number>;
 		stateCounts: Map<Runtime.TopoKey, number>;
 		childCounts: Map<Runtime.TopoKey, number>;
-		discriminator: string | number;
+		discriminator?: string | number;
 	};
 
 	type PlasmaRef = symbol & {
