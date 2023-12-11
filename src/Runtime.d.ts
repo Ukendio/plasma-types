@@ -52,6 +52,8 @@ declare namespace Runtime {
 		 * @deprecated
 		 */
 		readonly _nominal_PlasmaRef: unique symbol;
+		// ref["frame"] = frame;
+		[x: string]: unknown;
 	};
 }
 
