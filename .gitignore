@@ -5,3 +5,8 @@ node_modules
 roblox.toml
 build
 plasma.rbxm
+/node_modules
+/out
+/include
+*.tsbuildinfo
+/src/test.ts
